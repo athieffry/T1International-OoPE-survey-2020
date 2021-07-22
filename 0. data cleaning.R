@@ -20,14 +20,14 @@ library(eulerr)
 # 1. READ IN RAW DATA WITH LABELS ####
 # ------------------------------------
 # a. read raw data
-data_column_types <- c(rep('guess', 2), 'date', rep('guess', 118)) # vector of column type (to not lose timestamp from Excel format)
+data_column_types <- c(rep('guess', 2), 'date', rep('guess', 116)) # vector of column type (to not lose timestamp from Excel format)
 data <- read_xlsx('1a - Raw Data/survey/T1D data pulled 2-9-21 Labels.xlsx', trim_ws=T, col_types=data_column_types)
-dim(data) # 1,080 x 121
+dim(data) # 1,080 x 119
 
 # b.remove entries without provided consent
 count(data, Consent) # 3 'not interested', 11 'NA', all the rest provided consent (1,066)
 data %<>% filter(Consent == 'I have read the above information and I agree to participate') %>% select(-Consent)
-dim(data) # 1,066 x 120
+dim(data) # 1,066 x 118
 
 
 # c. get country alpha codes (2, 3) and region
@@ -56,7 +56,7 @@ country_infos <- readRDS('1a - Raw Data/country_data/country_data.rds')
 # ----------------------------------------
 # a. remove empty columns & rows
 data %<>% remove_empty(which=c('rows', 'cols')) # 5 columns removed
-dim(data) # 1,066 x 115
+dim(data) # 1,066 x 113
 
 # b. rename columns into script-friendly names (RDS was generated manually in Excel)
 column_names_df <- read_xlsx('1a - Raw Data/survey/column names for R.xlsx')
@@ -66,7 +66,7 @@ data %<>% dplyr::rename(all_of(column_names))
 
 # c. add country info
 data %<>% left_join(country_infos, by=c('country'='country_name')) # NB: NA values are normal: some respondents didn't inform on their country
-dim(data) # 1,066 x 118
+dim(data) # 1,066 x 117
 
 
 
